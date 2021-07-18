@@ -8,27 +8,41 @@ This tiny little library allows you to track your facebook campaign ids with you
 First copy the codes below and place them right before the closing body tag in your landing page.
 ```html
 <script>
-if (window.location.search != '') {
-	var fb_campaign_id = '';
+	var fb_campaign_id = ''; //utm_medium
+	var fb_utm_source = '';
+	var fb_ad_id = ''; //utm_content
+	var fb_adset_id = ''; //utm_campaign
 	var search_items = window.location.search;
 	search_items = search_items.replace('?', '');
+
+	var buildLink = buyLinkList[i].href+'?';
 
 	search_items = search_items.split('&&');
 	for(i=0;i<search_items.length;i++){
 	    var thisItem = search_items[i];
+		var getCampaign = thisItem.split("=");
 	    if(thisItem.indexOf('utm_medium') > -1){
-	        var getCampaign = thisItem.split("=");
 	        fb_campaign_id = getCampaign[1];
-
-	        var buyLinkList = document.getElementsByClassName('buyBtn');
-			for(i=0;i<buyLinkList.length;i++){
-			    var newURL = buyLinkList[i].href+'?attributes[fb_campaign_id]='+fb_campaign_id;
-			    buyLinkList[i].href=newURL;
-			}
-
+	        buildLink = buildLink+'attributes[fb_campaign_id]='+fb_campaign_id;
+	    }
+		
+	    if(thisItem.indexOf('utm_campaign') > -1){
+	        fb_adset_id = getCampaign[1];
+	        buildLink = buildLink+'&attributes[fb_adset_id]='+fb_adset_id;
+	    }
+		
+	    if(thisItem.indexOf('utm_content') > -1){
+	        fb_ad_id = getCampaign[1];
+	        buildLink = buildLink+'&attributes[fb_ad_id]='+fb_ad_id;
 	    }
 	}
-}
+
+	//update link
+    var buyLinkList = document.getElementsByClassName('buyBtn');
+	for(i=0;i<buyLinkList.length;i++){
+	    // var newURL = buyLinkList[i].href+'?attributes[fb_campaign_id]='+fb_campaign_id;
+	    buyLinkList[i].href=buildLink;
+	}
 </script>
 ```
 
